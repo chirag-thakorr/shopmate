@@ -3,9 +3,10 @@ from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
+from django.db import transaction
 from .serializers import OrderSerializer
 from .models import Order
-from django.db import transaction
+
 
 class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all().order_by('-created_at')
@@ -15,7 +16,7 @@ class OrderViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
         # list/create remain open (we may want create open for guest checkout)
         # but custom actions can require auth
-        if self.action == 'my_orders':
+        if self.action in ['my_orders', 'create']:
             return [IsAuthenticated()]
         return [AllowAny()]
 

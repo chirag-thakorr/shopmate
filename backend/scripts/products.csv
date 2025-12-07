@@ -1,0 +1,16 @@
+title,slug,description,price,category_name,category_slug,inventory
+Apple iPhone 15,apple-iphone-15,Latest generation iPhone with A16 Bionic chip and improved camera.,79999,Smartphones,smartphones,25
+Samsung Galaxy S24,samsung-galaxy-s24,Flagship Android phone with AMOLED display and triple camera.,74999,Smartphones,smartphones,30
+OnePlus Nord CE 4,oneplus-nord-ce-4,Mid-range smartphone with smooth performance and 5G support.,25999,Smartphones,smartphones,40
+MacBook Air M2,macbook-air-m2,Lightweight laptop powered by Apple M2 chip.,114999,Laptops,laptops,10
+Dell XPS 13,dell-xps-13,Premium ultrabook with bezel-less display.,99999,Laptops,laptops,8
+Lenovo ThinkPad E14,lenovo-thinkpad-e14,Business laptop with strong build and great keyboard.,65999,Laptops,laptops,15
+Sony WH-1000XM5,sony-wh-1000xm5,Noise-cancelling over-ear Bluetooth headphones.,29999,Headphones,headphones,20
+Boat Airdopes 441,boat-airdopes-441,True wireless earbuds with good bass and battery life.,1999,Headphones,headphones,100
+Logitech MX Master 3,logitech-mx-master-3,Ergonomic wireless mouse for productivity.,8999,Accessories,accessories,35
+Cosmic Byte Gaming Keyboard,cosmic-byte-gaming-keyboard,Mechanical RGB keyboard for gamers.,3499,Accessories,accessories,50
+Samsung 55 Inch 4K TV,samsung-55-4k-tv,Ultra HD smart TV with HDR support.,55999,Television,television,12
+LG 43 Inch Smart TV,lg-43-smart-tv,Full HD smart TV with built-in apps.,32999,Television,television,18
+Canon EOS 1500D,canon-eos-1500d,Entry-level DSLR camera with 24.1MP sensor.,37999,Cameras,cameras,9
+Nikon D5600,nikon-d5600,DSLR camera with flip screen and great autofocus.,52999,Cameras,cameras,6
+Apple AirPods Pro 2,apple-airpods-pro-2,Wireless earbuds with active noise cancellation.,26999,Headphones,headphones,25
