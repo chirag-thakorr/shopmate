@@ -105,20 +105,7 @@ export default function ProductList() {
         ))}
       </div>
 
-      <div
-        style={{
-          display:'grid',
-          gridTemplateColumns:'repeat(auto-fill,minmax(240px,1fr))',
-          gap:16,
-          marginTop:16,
-        }}
-      >
-        {products.map(p => (
-          <div key={p.id} style={{border:'1px solid #eee', padding:12, borderRadius:8}}>
-            {/* product card */}
-          </div>
-        ))}
-      </div>
+      
 
       {/* Product grid */}
       <div style={{
@@ -127,7 +114,12 @@ export default function ProductList() {
         gap:16
       }}>
         {!loading && !error && products.length === 0 && (
-          <div style={{marginTop:16}}>
+          <div style={{
+          display:'grid',
+          gridTemplateColumns:'repeat(auto-fill,minmax(240px,1fr))',
+          gap:16,
+          marginTop:16,
+        }}>
             No products found.
           </div>
         )}
