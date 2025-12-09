@@ -8,7 +8,8 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class ProductSerializer(serializers.ModelSerializer):
     category = CategorySerializer(read_only=True)
-    average_rating = serializers.FloatField(read_only=True)
+    # average_rating = serializers.FloatField(read_only=True)
+    average_rating = serializers.FloatField(source='avg_rating', read_only=True)
     review_count = serializers.IntegerField(read_only=True)
     class Meta:
         model = Product

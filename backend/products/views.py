@@ -27,11 +27,19 @@ class ProductViewSet(viewsets.ReadOnlyModelViewSet):
     search_fields = ['title', 'description']
     ordering_fields = ['price', 'created_at']
 
+    # def get_queryset(self):
+    #     qs = super().get_queryset()
+    #     category_slug = self.request.query_params.get('category')
+    #     if category_slug:
+    #         qs = qs.filter(category__slug=category_slug)
+    #     return qs
     def get_queryset(self):
-        qs = super().get_queryset()
-        category_slug = self.request.query_params.get('category')
-        if category_slug:
-            qs = qs.filter(category__slug=category_slug)
+        qs = Product.objects.all()
+        # annotate with rating summary
+        qs = qs.annotate(
+            avg_rating=Avg('reviews__rating'),
+            review_count=Count('reviews')
+        ).order_by('-created_at')
         return qs
 
     @action(detail=True, methods=['get', 'post'], url_path='reviews', permission_classes=[IsAuthenticatedOrReadOnly])

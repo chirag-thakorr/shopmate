@@ -66,10 +66,24 @@ export default function CheckoutPage() {
         headers:{'Content-Type':'application/json'},
         body: JSON.stringify(payload)
       });
+      // if (!res.ok) {
+      //   const text = await res.text();
+      //   throw new Error(text || 'Order failed');
+      // }
       if (!res.ok) {
-        const text = await res.text();
-        throw new Error(text || 'Order failed');
+        const txt = await res.text();
+        let msg = 'Order failed';
+        try {
+          const data = JSON.parse(txt);
+          if (typeof data === 'string') msg = data;
+          else if (data.detail) msg = data.detail;
+          else if (Array.isArray(data.non_field_errors)) msg = data.non_field_errors.join(', ');
+        } catch {
+          msg = txt || msg;
+        }
+        throw new Error(msg);
       }
+
       const data = await res.json();
 
       // // Save last order id to localStorage so other pages can react

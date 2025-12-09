@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { addToCart } from '../utils/cart';
 import { fixMediaUrl } from '../utils/images';
 import { apiFetch } from '../utils/api'; 
+import { Stars } from '../components/Stars';
 
 export default function ProductDetail() {
   const { slug } = useParams();
@@ -12,7 +13,10 @@ export default function ProductDetail() {
   const [newComment, setNewComment] = useState('');
 
   const isLoggedIn = !!localStorage.getItem('access_token');
+  // const outOfStock = !product.inventory || product.inventory <= 0;
+  const outOfStock = !product?.inventory;
 
+  
   useEffect(() => {
     // product fetch
     fetch(`/api/products/${slug}/`)
@@ -107,11 +111,13 @@ export default function ProductDetail() {
               background:"#007bff",
               color:"white",
               borderRadius:"6px",
-              cursor:"pointer",
+              cursor: outOfStock ? "not-allowed" : "pointer",
               marginTop:"10px",
               fontSize:"16px"
             }}
+            disabled={outOfStock}
             onClick={() => {
+                if (outOfStock) return;
                 addToCart(product, 1);
                 // dispatch storage event so other tabs/components update
                 window.dispatchEvent(new Event('storage'));
@@ -119,14 +125,19 @@ export default function ProductDetail() {
             }}
 
           >
-            Add to Cart
+            {outOfStock ? "Out of stock" : "Add to Cart"}
           </button>
 
         </div>
       </div>
+      
+      
             {/* Reviews section */}
       <div style={{marginTop:40}}>
+        
+        
         <h2>Reviews</h2>
+        <Stars value={product.average_rating} />
 
         {product.review_count > 0 ? (
           <p>

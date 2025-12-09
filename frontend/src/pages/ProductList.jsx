@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from "react-router-dom";
 import { fixMediaUrl } from '../utils/images';
+import { Stars } from '../components/Stars';
 
 export default function ProductList() {
   const [products, setProducts] = useState([]);
@@ -11,6 +12,9 @@ export default function ProductList() {
   const [typingSearch, setTypingSearch] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [sortBy, setSortBy] = useState('newest'); 
+  const sortedProducts = [...products];
+
 
   // load categories once
   useEffect(() => {
@@ -60,19 +64,44 @@ export default function ProductList() {
   if (error) return <div style={{padding:20, color:'red'}}>Error: {error}</div>;
   // if (!products.length) return <div style={{padding:20}}>No products found.</div>;
 
+  if (sortBy === 'price_low') {
+    sortedProducts.sort((a,b) => Number(a.price) - Number(b.price));
+  } else if (sortBy === 'price_high') {
+    sortedProducts.sort((a,b) => Number(b.price) - Number(a.price));
+  } else if (sortBy === 'rating_high') {
+    sortedProducts.sort((a,b) => (b.average_rating || 0) - (a.average_rating || 0));
+  } else {
+    // newest default – already backend se created_at desc aa raha hai
+  }
+
   return (
     <div style={{padding:20, fontFamily: 'Arial, sans-serif'}}>
       <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:16}}>
         <h1 style={{margin:0}}>Products</h1>
 
-        {/* Search box */}
-        <input
-          type="search"
-          placeholder="Search products…"
-          value={typingSearch}
-          onChange={e => setTypingSearch(e.target.value)}
-          style={{padding:8, minWidth:200}}
-        />
+        <div style={{display:'flex', gap:8, alignItems:'center'}}>
+
+          {/* Search box */}
+          <input
+            type="search"
+            placeholder="Search products…"
+            value={typingSearch}
+            onChange={e => setTypingSearch(e.target.value)}
+            style={{padding:8, minWidth:200}}
+          />
+
+          {/* Sort dropdown */}
+          <select
+            value={sortBy}
+            onChange={e => setSortBy(e.target.value)}
+            style={{padding:8}}
+          >
+            <option value="newest">Newest</option>
+            <option value="price_low">Price: Low to High</option>
+            <option value="price_high">Price: High to Low</option>
+            <option value="rating_high">Top Rated</option>
+          </select>
+        </div>
       </div>
 
       {/* Category filter bar */}
@@ -124,7 +153,7 @@ export default function ProductList() {
             No products found.
           </div>
         )}
-        {products.map(p => (
+        {sortedProducts.map(p => (
           <Link
             to={`/product/${p.slug}`}
             key={p.id}
@@ -141,12 +170,26 @@ export default function ProductList() {
                 </div>
               )}
               <h3 style={{margin:'0 0 8px 0'}}>{p.title}</h3>
+
+              {/* Rating row */}
+              <div style={{marginBottom:8}}>
+                <Stars value={p.average_rating} />
+                <small style={{color:'#666'}}>
+                  {p.review_count > 0 ? `(${p.review_count} reviews)` : '(No reviews yet)'}
+                </small>
+              </div>
+
               <p style={{margin:'0 0 8px 0', color:'#444'}}>
                 {p.description ? p.description.slice(0,120) : 'No description'}
               </p>
               <div style={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
                 <strong>₹{p.price}</strong>
-                <small style={{color:'#666'}}>{p.inventory} in stock</small>
+                {p.inventory > 0 ? (
+                  <small style={{color:'#666'}}>{p.inventory} in stock</small>
+                ) : (
+                  <small style={{color:'red'}}>Out of stock</small>
+                )}
+                {/* <small style={{color:'#666'}}>{p.inventory} in stock</small> */}
               </div>
               {p.category && (
                 <div style={{marginTop:6}}>
