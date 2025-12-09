@@ -1,6 +1,7 @@
 // frontend/src/pages/ProductList.jsx
 import React, { useEffect, useState } from 'react';
 import { Link } from "react-router-dom";
+import { fixMediaUrl } from '../utils/images';
 
 export default function ProductList() {
   const [products, setProducts] = useState([]);
@@ -130,6 +131,15 @@ export default function ProductList() {
             style={{textDecoration:'none', color:'inherit'}}
           >
             <div style={{border:'1px solid #e6e6e6', padding:12, borderRadius:8, background:'#fff'}}>
+              {p.image && (
+                <div style={{marginBottom:8}}>
+                  <img
+                    src={fixMediaUrl(p.image)}
+                    alt={p.title}
+                    style={{width:'100%', height:160, objectFit:'cover', borderRadius:6}}
+                  />
+                </div>
+              )}
               <h3 style={{margin:'0 0 8px 0'}}>{p.title}</h3>
               <p style={{margin:'0 0 8px 0', color:'#444'}}>
                 {p.description ? p.description.slice(0,120) : 'No description'}

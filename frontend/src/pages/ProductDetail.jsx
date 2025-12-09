@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from "react-router-dom";
 import { addToCart } from '../utils/cart';
+import { fixMediaUrl } from '../utils/images';
 
 
 export default function ProductDetail() {
@@ -29,8 +30,16 @@ export default function ProductDetail() {
           width: "300px",
           height: "300px",
           background:"#eee",
-          borderRadius:"10px"
+          borderRadius:"10px",
+          overflow:'hidden'
         }}>
+          {product.image ? (
+          <img
+            src={fixMediaUrl(product.image)}
+            alt={product.title}
+            style={{width:'100%', height:'100%', objectFit:'cover'}}
+          />
+        ) : (
           <p style={{
             textAlign:"center",
             paddingTop:"130px",
@@ -38,6 +47,7 @@ export default function ProductDetail() {
           }}>
             No Image
           </p>
+        )}
         </div>
 
         {/* Right Side (Details) */}
