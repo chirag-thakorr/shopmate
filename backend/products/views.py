@@ -1,10 +1,13 @@
 from rest_framework import viewsets, filters
 from .models import Product, Category, Review
 from .serializers import ProductSerializer, CategorySerializer, ReviewSerializer
-from django.db.models import Avg, Count
+from django.db.models import Avg, Count, Q
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, AllowAny, IsAuthenticated
 from rest_framework.response import Response
+from .permissions import IsSellerOrReadOnly
+from core.permissions import IsSeller
+
 
 
 class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
@@ -26,6 +29,29 @@ class ProductViewSet(viewsets.ReadOnlyModelViewSet):
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['title', 'description']
     ordering_fields = ['price', 'created_at']
+
+    permission_classes = [IsSellerOrReadOnly]
+
+    def perform_create(self, serializer):
+        # jab seller naya product banayega, seller field attach
+        serializer.save(seller=self.request.user)
+
+    def perform_update(self, serializer):
+        # ensure sirf apne hi product update kare
+        obj = self.get_object()
+        if obj.seller and obj.seller != self.request.user:
+            raise PermissionError("You are not allowed to edit this product.")
+        serializer.save()
+    
+    @action(detail=False, methods=['get'], url_path='my', permission_classes=[IsAuthenticated])
+    def my_products(self, request):
+        qs = Product.objects.filter(seller=request.user).order_by('-created_at')
+        page = self.paginate_queryset(qs)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+        serializer = self.get_serializer(qs, many=True)
+        return Response(serializer.data)
 
     # def get_queryset(self):
     #     qs = super().get_queryset()
@@ -70,3 +96,25 @@ class ProductViewSet(viewsets.ReadOnlyModelViewSet):
         out = ReviewSerializer(review)
         return Response(out.data, status=201 if created else 200)
 
+
+
+class SellerProductViewSet(viewsets.ModelViewSet):
+    """
+    /api/seller/products/ ke liye ViewSet
+    - sirf seller users ke liye allowed
+    - queryset = sirf current user ke products
+    - create/update/delete allowed
+    """
+    serializer_class = ProductSerializer
+    permission_classes = [IsAuthenticated, IsSeller]
+
+    def get_queryset(self):
+        # sirf apne hi products
+        return Product.objects.filter(seller=self.request.user).order_by('-created_at')
+        
+    def perform_create(self, serializer):
+        # seller field force karo logged-in user se
+        serializer.save(seller=self.request.user)
+
+    # def perform_update(self, serializer):
+    #     serializer.save(seller=self.request.user)
