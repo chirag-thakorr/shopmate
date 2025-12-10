@@ -30,7 +30,7 @@ class OrderViewSet(viewsets.ModelViewSet):
                 order.user = request.user
                 order.save()
         return Response(self.get_serializer(order).data, status=status.HTTP_201_CREATED)
-
+    
     @action(detail=False, methods=['get'], url_path='my', url_name='my_orders')
     def my_orders(self, request):
         """

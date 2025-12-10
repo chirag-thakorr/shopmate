@@ -16,7 +16,7 @@ export default function MyOrders() {
         const token = localStorage.getItem('access_token');
         // console.log("TOKEN FOUND?", token);
 
-        const res = await fetch('/api/orders/my/', {
+        const res = await apiFetch('/api/orders/my/', {
           headers: {
             'Content-Type': 'application/json',
             ...(token ? { Authorization: 'Bearer ' + token } : {})

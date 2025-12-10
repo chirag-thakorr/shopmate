@@ -16,6 +16,13 @@ class Product(models.Model):
     inventory = models.IntegerField(default=0)
     image = models.ImageField(upload_to='products/', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    seller = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True,
+        blank=True,
+        related_name='products',
+        on_delete=models.SET_NULL
+    )
 
     def __str__(self): return self.title
 
