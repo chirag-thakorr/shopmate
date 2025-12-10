@@ -8,11 +8,15 @@ export default function Header() {
   const [username, setUsername] = useState(localStorage.getItem('username') || null);
   const location = useLocation();
   const navigate = useNavigate();
+  const [role, setRole] = useState(localStorage.getItem('user_role') || 'customer');
+
 
   useEffect(() => {
     // update cart count and username on location change
     setCount(cartCount());
     setUsername(localStorage.getItem('username') || null);
+    setRole(localStorage.getItem('user_role') || 'customer');
+
 
     function onStorage() {
       // when localStorage changes (from login/logout in other tabs)
@@ -27,6 +31,8 @@ export default function Header() {
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
     localStorage.removeItem('username');
+    localStorage.removeItem("user_email");   // ⭐ IMPORTANT
+    localStorage.removeItem("user_role"); 
     // notify other components
     window.dispatchEvent(new Event('storage'));
     // optionally navigate to home
@@ -54,7 +60,13 @@ export default function Header() {
       </Link>
 
       <nav style={{display:'flex', gap:16, alignItems:'center'}}>
-        <Link to="/" style={{textDecoration:'none', color:'#333'}}>Products</Link>
+        {/* <Link to="/" style={{textDecoration:'none', color:'#333'}}>Products</Link> */}
+        {role === 'seller' && (
+          <Link to="/seller/products" style={{textDecoration:'none', color:'#333'}}>
+            My Products
+          </Link>
+        )}
+
 
         {/* My Orders always visible */}
         <Link to="/my-orders" onClick={handleMyOrdersClick} style={{textDecoration:'none', color:'#333'}}>

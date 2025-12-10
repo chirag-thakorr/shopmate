@@ -8,7 +8,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', health),
+    path('api/health/', health),
 
     # auth / user endpoints
     path('api/register/', register),

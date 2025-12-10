@@ -1,7 +1,7 @@
 // frontend/src/pages/Login.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-// import { apiFetch } from '../utils/api';
+import { apiFetch } from '../utils/api';
 
 export default function Login() {
   const [username, setUsername] = useState('');
@@ -35,17 +35,17 @@ export default function Login() {
       localStorage.setItem('username', username);
       // localStorage.setItem('user_email', email);
 
-      // 2) ab /api/me/ se user details lo (email yahi se)
-      // const meRes = await apiFetch('/api/me/');
-      // if (!meRes.ok) {
-      //   const txt = await meRes.text();
-      //   console.error('Failed to fetch /api/me/:', txt);
-      //   localStorage.setItem('username', username);
-      // } else {
-      //   const me = await meRes.json();
-      //   localStorage.setItem('username', me.username);
-      //   localStorage.setItem('user_email', me.email || '');
-      // }
+      try {
+        const meRes = await apiFetch('/api/me/');
+        if (meRes.ok) {
+          const me = await meRes.json();
+          localStorage.setItem('username', me.username);
+          localStorage.setItem('user_email', me.email);
+          localStorage.setItem('user_role', me.role);
+        }
+      } catch (e) {
+        console.warn('Failed to fetch /api/me/', e);
+      }
 
       // notify other components (Header) to re-read storage
       window.dispatchEvent(new Event('storage'));

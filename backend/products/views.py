@@ -5,8 +5,9 @@ from django.db.models import Avg, Count, Q
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, AllowAny, IsAuthenticated
 from rest_framework.response import Response
-from .permissions import IsSellerOrReadOnly
+# from .permissions import IsSellerOrReadOnly
 from core.permissions import IsSeller
+from core.permissions import IsSellerOrReadOnly
 
 
 
