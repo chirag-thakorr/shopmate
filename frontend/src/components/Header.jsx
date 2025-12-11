@@ -29,7 +29,7 @@ export default function Header() {
 
   function logout() {
     localStorage.removeItem('access_token');
-    localStorage.removeItem('refresh_token');
+    localStorage.removeItem('r  efresh_token');
     localStorage.removeItem('username');
     localStorage.removeItem("user_email");   // ⭐ IMPORTANT
     localStorage.removeItem("user_role"); 

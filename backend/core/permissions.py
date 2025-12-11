@@ -1,57 +1,41 @@
-# # backend/core/permissions.py
-# from rest_framework.permissions import BasePermission
 
-# class IsSeller(BasePermission):
-#     """
-#     Allow access only to authenticated users who are in 'seller' group.
-#     """
-
-#     def has_permission(self, request, view):
-#         user = request.user
-#         if not user or not user.is_authenticated:
-#             return False
-#         return user.groups.filter(name='seller').exists()
-
-
-# backend/core/permissions.py
-# from rest_framework.permissions import BasePermission
-
-# class IsSeller(BasePermission):
-#     """
-#     Sirf unhi users ko allow karega jo authenticated hain
-#     aur jinke paas is_seller = True hai.
-#     """
-
-#     def has_permission(self, request, view):
-#         return bool(
-#             request.user
-#             and request.user.is_authenticated
-#             and getattr(request.user, "is_seller", False)  # safe check
-#         )
 
 
 
 from rest_framework.permissions import BasePermission, SAFE_METHODS
 
-class IsSellerOrReadOnly(BasePermission):
+
+class IsSeller(BasePermission):
     """
-    Read sab ke liye open.
-    Write (POST/PUT/PATCH/DELETE) sirf seller ke liye.
+    Allow access only to users in 'seller' group (or staff).
+    Use this to protect routes that only sellers may call.
     """
+
     def has_permission(self, request, view):
-        if request.method in SAFE_METHODS:
-            return True
         user = request.user
         if not user or not user.is_authenticated:
             return False
-
-        # option 1: role from profile
-        profile = getattr(user, 'profile', None)
-        if profile and profile.role == 'seller':
+        # staff users allowed by default
+        if getattr(user, "is_staff", False):
             return True
+        # check groups - requires that you create a group named 'seller'
+        return user.groups.filter(name="seller").exists()
 
-        # option 2: Seller group
-        if user.groups.filter(name='Seller').exists():
+
+class IsSellerOrReadOnly(BasePermission):
+    """
+    Read-only requests are allowed for anyone.
+    Unsafe methods (POST/PUT/PATCH/DELETE) allowed only to sellers (or staff).
+    """
+
+    def has_permission(self, request, view):
+        # allow safe methods for all
+        if request.method in SAFE_METHODS:
             return True
-
-        return False
+        # otherwise require seller permission
+        user = request.user
+        if not user or not user.is_authenticated:
+            return False
+        if getattr(user, "is_staff", False):
+            return True
+        return user.groups.filter(name="seller").exists()
