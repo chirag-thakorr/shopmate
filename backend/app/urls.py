@@ -19,6 +19,10 @@ urlpatterns = [
     # orders / products
     path('api/', include('products.urls')),
     path('api/', include('orders.urls')),
+    
+    # cart
+    path("api/cart/", include("cart.urls")),
+
 ]
 
 if settings.DEBUG:
