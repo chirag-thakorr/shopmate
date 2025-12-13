@@ -5,6 +5,10 @@ import { fixMediaUrl } from '../utils/images';
 import { apiFetch } from '../utils/api'; 
 import { Stars } from '../components/Stars';
 
+
+
+
+
 export default function ProductDetail() {
   const { slug } = useParams();
   const [product, setProduct] = useState(null);
@@ -30,6 +34,19 @@ export default function ProductDetail() {
   }, [slug]);
 
   if (!product) return <div style={{padding:20}}>Loading...</div>;
+
+  async function addToWishlist() {
+    const res = await apiFetch("/api/wishlist/", {
+      method: "POST",
+      body: JSON.stringify({ product_id: product.id })
+    });
+
+    if (res.ok) {
+      alert("Added to wishlist!");
+    } else {
+      alert("Login required!");
+    }
+  }
 
   async function submitReview(e) {
     e.preventDefault();
@@ -127,6 +144,10 @@ export default function ProductDetail() {
           >
             {outOfStock ? "Out of stock" : "Add to Cart"}
           </button>
+          <button onClick={addToWishlist} style={{ padding: 10 }}>
+            ❤️ Add to Wishlist
+          </button>
+
 
         </div>
       </div>

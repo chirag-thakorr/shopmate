@@ -74,6 +74,8 @@ export default function Header() {
           </>
         )}
 
+        <Link to="/wishlist">Wishlist ❤️</Link>
+        
         <Link to="/cart" style={{position:'relative', textDecoration:'none', color:'#333'}}>
           🛒 Cart
           {count > 0 && (

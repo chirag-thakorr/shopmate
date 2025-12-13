@@ -1,6 +1,6 @@
-from rest_framework import viewsets, filters
-from .models import Product, Category, Review
-from .serializers import ProductSerializer, CategorySerializer, ReviewSerializer
+from rest_framework import viewsets, filters, permissions
+from .models import Product, Category, Review, Wishlist
+from .serializers import ProductSerializer, CategorySerializer, ReviewSerializer, WishlistSerializer
 from django.db.models import Avg, Count
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
@@ -70,3 +70,22 @@ class ProductViewSet(viewsets.ReadOnlyModelViewSet):
         out = ReviewSerializer(review)
         return Response(out.data, status=201 if created else 200)
 
+
+class WishlistViewSet(viewsets.ModelViewSet):
+    serializer_class = WishlistSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Wishlist.objects.filter(user=self.request.user)
+
+    def create(self, request, *args, **kwargs):
+        product_id = request.data.get('product_id')
+
+        # Prevent duplicate
+        obj, created = Wishlist.objects.get_or_create(
+            user=request.user,
+            product_id=product_id
+        )
+        
+        serializer = self.get_serializer(obj)
+        return Response(serializer.data)

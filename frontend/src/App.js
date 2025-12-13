@@ -11,6 +11,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import MyOrders from './pages/MyOrders';
 import OrderDetail from './pages/OrderDetail';
+import Wishlist from "./pages/Wishlist";
 
 function App() {
   return (
@@ -26,7 +27,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/my-orders" element={<MyOrders />} />
-        
+        <Route path="/wishlist" element={<Wishlist />} />
       </Routes>
     </>
   );
